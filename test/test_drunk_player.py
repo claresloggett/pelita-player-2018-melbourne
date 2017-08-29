@@ -1,6 +1,6 @@
 
 from pelita.player import SimpleTeam
-from pelita.player import TestPlayer
+from pelita.player import SteppingPlayer
 
 from pelita.game_master import GameMaster
 
@@ -20,7 +20,7 @@ def test_my_player_is_not_moving():
         my_team,
         # register a pre-defined team as an enemy
         # First one moves left-down-down-left-left, second one left
-        SimpleTeam(TestPlayer("<vv<<"), TestPlayer("<<<<<"))
+        SimpleTeam(SteppingPlayer("<vv<<"), SteppingPlayer("<<<<<"))
     ]
 
     gm = GameMaster(test_layout, teams, number_bots=4, game_time=5, seed=20)
