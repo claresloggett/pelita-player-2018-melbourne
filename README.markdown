@@ -5,7 +5,7 @@
 * Please use Python 3
 * Numpy is pre-installed on the tournament machine; everything else must be negotiated
 * Please use relative imports inside your module
-* You may need to set the PYTHONPATH to point to the main pelita directory
+* You may need to set the PYTHONPATH to point to the main pelita directory for the tests or simply run `make test` from the repository
 
 ## Files
 
