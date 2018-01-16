@@ -4,10 +4,10 @@ from pelita.player import SteppingPlayer
 
 from pelita.game_master import GameMaster
 
-from team import DrunkPlayer
+from team import KangarooPlayer
 
 def test_my_player_is_not_moving():
-    my_team = SimpleTeam("test", DrunkPlayer(), DrunkPlayer())
+    my_team = SimpleTeam("test", KangarooPlayer(), KangarooPlayer())
     test_layout = """
         ############
         # 0 #  # 1 #

@@ -5,8 +5,8 @@ from pelita.datamodel import stop
 # use relative imports for things inside your module
 from .utils import utility_function
 
-class DrunkPlayer(AbstractPlayer):
-    """ Basically a clone of the RandomPlayer. """
+class KangarooPlayer(AbstractPlayer):
+    """ Jumps in random directions. """
 
     def __init__(self):
         # Do some basic initialisation here. You may also accept additional
@@ -25,14 +25,14 @@ class DrunkPlayer(AbstractPlayer):
         print(self.current_uni.pretty)
 
     def check_pause(self):
-        # make a pause every fourth step because whatever :)
+        # make a pause every fourth step because it is too hot to jump
         if self.sleep_rounds <= 0:
             if self.rnd.random() > 0.75:
                 self.sleep_rounds = 3
 
         if self.sleep_rounds > 0:
             self.sleep_rounds -= 1
-            texts = ["Too much Μαστίχα", "#aspp2017", "Python School Νικήτη"]
+            texts = ["40°C", "Too hot", "Too tired", "Too lazy"]
             self.say(self.rnd.choice(texts))
             return stop
 
