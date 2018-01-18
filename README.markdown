@@ -5,37 +5,35 @@
 * Please use Python 3
 * Numpy is pre-installed on the tournament machine; everything else must be negotiated
 * Please use relative imports inside your module
-* You may need to set the PYTHONPATH to point to the main pelita directory for the tests or simply run `make test` from the repository
+* All `pelita` commands should be run from the root of the repository (or outside of it), never from inside the `team/` folder, for example
+* Simple testing can be done with help of the `Makefile`
 
 ## Files
 
-### team/
+### `team/`
 
 The main module which contains all your team’s code. Please use relative imports from inside the module.
 
-### team/__init__.py
+### `team/__init__.py`
 
-Builds the final teams and exports the factory methods. When using the module on the command line, such as in
+The module’s `__init__.py` is required to contain a method `team` which is supposed to return the main players for the tournament, for example:
 
-    pelita path/to/module/team
+    def team():
+        return SimpleTeam("Local marsupial team", KangarooPlayer(), KoalaPlayer())
 
-the method defined with `def team` is automatically called. Different methods can be specified with a colon
+### `team/demo_player.py`
 
-    pelita path/to/module/team:other_team
+Contains the code for a simple demo player. This player can then be imported in the `__init__.py` file.
 
-### team/demo_player.py
-
-Contains the code for a simple demo player.
-
-### team/utils.py
+### `team/utils.py`
 
 This could be a good place for global utility functions (but feel free to add more files for this, if needed)
 
-### test/test_demo_player.py
+### `test/test_demo_player.py`
 
 Simple unittest for your player. Note the relative imports. You can run tests using py.test, which automatically executes all tests in the `test/` directory.
 
-    $ py.test test/
+    $ PYTHONPATH=. pytest test/
     .
     ----------------------------------------------------------------------
     Ran 1 test in 0.025s
