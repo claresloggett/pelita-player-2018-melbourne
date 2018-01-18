@@ -1,6 +1,6 @@
 
 from pelita.player import SimpleTeam
-from .demo_player import KangarooPlayer
+from .demo_player import KangarooPlayer, ReporterPlayer
 # (please use relative imports inside your module)
 
 # The default team factory method, which this module must export.
@@ -9,7 +9,7 @@ from .demo_player import KangarooPlayer
 # the first and second player.
 
 def team():
-    return SimpleTeam("Kangaroo Team", KangarooPlayer(), KangarooPlayer())
+    return SimpleTeam("Reporter Team", ReporterPlayer(), KangarooPlayer())
 
 # For testing purposes, one may use alternate factory methods::
 #
