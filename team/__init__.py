@@ -10,7 +10,7 @@ from .player import NNPlayer
 # the first and second player.
 
 def team():
-    return SimpleTeam("Test Team", NNPlayer(), NNPlayer())
+    return SimpleTeam("Highly Sophisticated AI", NNPlayer('testdata/weights40.npy'), NNPlayer('testdata/weights60.npy'))
 
 # For testing purposes, one may use alternate factory methods::
 #

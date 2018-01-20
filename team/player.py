@@ -4,9 +4,6 @@ import numpy as np
 from pelita.player import AbstractPlayer
 from pelita.datamodel import stop, north, south, east, west
 
-# use relative imports for things inside your module
-from .utils import utility_function
-
 def relu(z):
     a = np.zeros_like(z)
     mask = z > 0
@@ -19,49 +16,19 @@ def sigmoid(z):
 
 class NNPlayer(AbstractPlayer):
 
-    vision_radius = 3
+    vision_radius = 5
 
-    def __init__(self):
-        # For now, set any weights to random values
-        # TODO: add legal_outputs as an input to the output layre
-        #print("Creating player")
+    def __init__(self, weights_file):
         self.output_moves = [stop, north, south, east, west]
 
-        zone_numinputs = 2  # own zone, west zone
-        maze_numinputs = (2*self.vision_radius+1)**2
-        food_numinputs = maze_numinputs
-        enemy_numinputs = maze_numinputs
-        noise_numinputs = maze_numinputs
-        team_numinputs = maze_numinputs
-        #print("Expected input sizes",[zone_numinputs,
-        #                              maze_numinputs,
-        #                              food_numinputs,
-        #                              enemy_numinputs,
-        #                              noise_numinputs,
-        #                              team_numinputs])
-        num_inputs = zone_numinputs + maze_numinputs + food_numinputs + \
-                     enemy_numinputs + noise_numinputs + team_numinputs
-        num_outputs = len(self.output_moves)
-        self.layer_spec = [num_inputs, 10, 8, num_outputs]
-        # Do not apply to first layer, i.e. inputs
         self.layer_funcs = [relu, relu, sigmoid]
-        self.weights = []
-        self.intercepts = []
-        for i in range(1, len(self.layer_spec)):
-            # random numbers with variance 1/N, where N is the number of inputs
-            # TODO: some inputs are sparse, do we need to adjust first layer variance?
-            A, B = self.layer_spec[i-1], self.layer_spec[i]
-            self.weights.append(np.random.randn(B,A)/np.sqrt(A))
-            self.intercepts.append(np.zeros((B,1)))
-        #print("Weights shapes",[m.shape for m in self.weights])
-        #print((weights[1] @ weights[0]).shape)
-        #fake_input = np.random.randn(num_inputs)
-        #print((weights[0] @ fake_input + intercepts[0]).shape)
+
+        self.weights, self.intercepts = np.load(weights_file)
+
 
     def set_initial(self):
         #print("Initialising")
         self.walls_arr = self.maze_to_numpy()
-        #print(self.walls_arr)
 
     # OR: everything done in coordinates relative to self?
     #     then do e.g. 10 closest food pieces
@@ -74,9 +41,9 @@ class NNPlayer(AbstractPlayer):
     # - enemy bot vision
     # - enemy bot noise vision
     # - teammate vision
-    # - map out of sight quantity, each octant
-    # - food out of sight quantity, each octant
-    # - coordinates?
+    # - map out of sight quantity, each octant - TODO
+    # - food out of sight quantity, each octant - TODO
+    # - coordinates??
     def get_move(self):
         #print("Starting move")
         #return self.output_moves[np.random.randint(5)]
@@ -92,12 +59,9 @@ class NNPlayer(AbstractPlayer):
         #print("Position {}. I see walls:".format((x,y)))
         #print(see_walls)
 
-        #print(see_walls.ravel())
-
         see_food = self.food_to_numpy(self.enemy_food)[x:xmax, y:ymax]
         #print("I see food")
         #print(see_food)
-        #print(see_food.ravel())
 
         see_enemy, see_noise = self.bots_to_numpy(self.enemy_bots, enemy=True)
         see_enemy = see_enemy[x:xmax, y:ymax]
@@ -105,20 +69,11 @@ class NNPlayer(AbstractPlayer):
 
         #print("I see enemies")
         #print(see_enemy)
-        #print(see_enemy.ravel())
 
         see_team = self.bots_to_numpy(self.other_team_bots, enemy=False)[x:xmax, y:ymax]
 
         #print("I see friends")
         #print(see_team)
-        #print(see_team.ravel())
-
-        #print("Input sizes",[inp.shape for inp in [zone_inputs,
-        #                                           see_walls.ravel(),
-        #                                           see_food.ravel(),
-        #                                           see_enemy.ravel(),
-        #                                           see_noise.ravel(),
-        #                                           see_team.ravel()]])
 
         inputs = np.concatenate([zone_inputs,
                                  see_walls.ravel(),
@@ -149,15 +104,9 @@ class NNPlayer(AbstractPlayer):
     def apply_nn(self, inputs):
         #print("Applying NN")
         x = inputs
-        #i = 1
-        #print(len(self.weights), len(self.intercepts), len(self.layer_funcs))
         for (w, b, activation) in zip(self.weights, self.intercepts, self.layer_funcs):
-            #print("Layer",i)
-            #i += 1
             z = w @ x + b
-            #print(z.shape, w.shape, x.shape, b.shape)
             x = activation(z)
-            #print("Size of activations now",x.shape)
         return x
 
 
